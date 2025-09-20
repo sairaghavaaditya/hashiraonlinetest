@@ -1,16 +1,6 @@
-/**
- * Calculates the magnitude (absolute value) for a BigInt.
- * @param {bigint} num The input BigInt.
- * @returns {bigint} The non-negative value of the input.
- */
+
 const getMagnitude = (num) => (num < 0n ? -num : num);
 
-/**
- * Finds the greatest common factor of two BigInts using the Euclidean algorithm.
- * @param {bigint} num1 The first number.
- * @param {bigint} num2 The second number.
- * @returns {bigint} The greatest common factor.
- */
 const findCommonFactor = (num1, num2) => {
     num1 = getMagnitude(num1);
     num2 = getMagnitude(num2);
@@ -22,9 +12,7 @@ const findCommonFactor = (num1, num2) => {
     return num1;
 };
 
-/**
- * Represents a rational number (a fraction) with a numerator and a denominator.
- */
+
 class RationalNumber {
     constructor(numerator, denominator = 1n) {
         this.numerator = numerator;
@@ -32,9 +20,7 @@ class RationalNumber {
         this.reduce();
     }
 
-    /**
-     * Reduces the fraction to its simplest form and ensures the denominator is positive.
-     */
+   
     reduce() {
         if (this.denominator === 0n) {
             throw new Error('Denominator cannot be zero.');
@@ -48,12 +34,7 @@ class RationalNumber {
         this.denominator /= commonFactor;
     }
 
-    /**
-     * Adds two RationalNumber objects.
-     * @param {RationalNumber} r1 The first rational number.
-     * @param {RationalNumber} r2 The second rational number.
-     * @returns {RationalNumber} A new RationalNumber instance representing the sum.
-     */
+
     static sum(r1, r2) {
         const commonFactor = findCommonFactor(r1.denominator, r2.denominator);
         const commonDenominator = (r1.denominator / commonFactor) * r2.denominator;
@@ -61,12 +42,7 @@ class RationalNumber {
         return new RationalNumber(resultingNumerator, commonDenominator);
     }
 
-    /**
-     * Multiplies two RationalNumber objects.
-     * @param {RationalNumber} r1 The first rational number.
-     * @param {RationalNumber} r2 The second rational number.
-     * @returns {RationalNumber} A new RationalNumber instance representing the product.
-     */
+ 
     static product(r1, r2) {
         const newNumerator = r1.numerator * r2.numerator;
         const newDenominator = r1.denominator * r2.denominator;
@@ -74,12 +50,6 @@ class RationalNumber {
     }
 }
 
-/**
- * Parses a string representation of a number in a given base into a BigInt.
- * @param {string} inputString The string to parse.
- * @param {number} radix The base of the number system (e.g., 2, 10, 16).
- * @returns {bigint} The resulting BigInt.
- */
 const parseBigIntFromBase = (inputString, radix) => {
     let result = 0n;
     inputString = inputString.toLowerCase();
@@ -98,11 +68,7 @@ const parseBigIntFromBase = (inputString, radix) => {
     return result;
 };
 
-/**
- * Reconstructs the original secret value from a set of shares using Lagrange interpolation.
- * @param {object} shareData The object containing the shares and configuration.
- * @returns {bigint} The reconstructed secret value.
- */
+
 const reconstructValue = (shareData) => {
     const config = shareData.keys;
     const requiredShares = config.k;
@@ -119,7 +85,6 @@ const reconstructValue = (shareData) => {
         dataPoints.push({ x: xCoordinate, y: yCoordinate });
     }
 
-    // Sort points by x-coordinate to ensure consistent selection
     dataPoints.sort((a, b) => (a.x < b.x ? -1 : a.x > b.x ? 1 : 0));
     const selectedPoints = dataPoints.slice(0, requiredShares);
 
@@ -146,7 +111,6 @@ const reconstructValue = (shareData) => {
         interpolatedSum = RationalNumber.sum(interpolatedSum, weightedTerm);
     }
 
-    // The final result must be an integer
     if (interpolatedSum.denominator !== 1n) {
         if (interpolatedSum.numerator % interpolatedSum.denominator !== 0n) {
             throw new Error('Result is not a whole number.');
@@ -180,6 +144,5 @@ const dataSet2 = {
     "10": { "base": "6", "value": "30140555423010311322515333" }
 };
 
-// Output secrets for both test cases
 console.log("Data Set 1 Reconstructed Value:", reconstructValue(dataSet1).toString());
 console.log("Data Set 2 Reconstructed Value:", reconstructValue(dataSet2).toString());
